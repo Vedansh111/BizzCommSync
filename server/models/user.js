@@ -29,14 +29,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role_id: {
-        type: Number,
+    role: {
+        type: Object,
         required: true,
     },
-    bussiness_id: {
-        type: Number,
-        required: true,
-    }
+    // bussiness_id: {
+    //     type: Number,
+    //     required: true,
+    // }
 }, { timestamps: true });
 
 export const User = new mongoose.model('user', userSchema);

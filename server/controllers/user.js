@@ -1,5 +1,5 @@
-import { response } from "express";
 import { User } from "../models/user.js";
+import { Role } from "../models/role.js";
 import { setUser } from "../service/auth.js";
 
 export const handleGetAllUsers = async (req, res) => {
@@ -48,8 +48,9 @@ export const handleCreateNewUser = async (req, res) => {
     if (checkSameEmail.length !== 0) {
         return res.status(409).json({ msg: "Email already in use" });
     }
+    const userRole = await Role.create({ type: "user"});
 
-    const result = await User.create({
+    await User.create({
         username: body.username,
         email: body.email,
         mobile_no: body.mobile_no,
@@ -57,6 +58,10 @@ export const handleCreateNewUser = async (req, res) => {
         bussiness_type: body.bussiness_type,
         password: body.password,
         verified: "pending",
+        role: {
+            role_id: userRole._id,
+            type: userRole.type,
+        },
     });
 
     return res.status(201).json({
@@ -66,9 +71,28 @@ export const handleCreateNewUser = async (req, res) => {
 
 export const handleUserLogin = async (req, res) => {
     const body = req.body;
-    const user = await User.findOne({ email: body.email, password: body.password  },{password: 0, __v: 0});
+    const user = await User.findOne({ email: body.email, password: body.password }, { password: 0, __v: 0 });
     if (!user) return res.status(404).json({ msg: "User not found" });
     const token = setUser(user);
-    res.cookie('uuid', token);
-    return res.status(200).json(user);
+    res.cookie('uid', token);
+    return res.status(200).json({
+        user: user,
+        uid: token,
+    });
 };
+
+export const handleRejectUserById = async (req, res) => {
+    const body = res.body;
+    const user = await User.findByIdAndUpdate(req.params.id, {
+        verified: 'rejected',
+    });
+    return res.status(200).json({ msg: "User rejected successfully"});
+}
+
+export const handleAcceptUserById = async (req, res) => {
+    console.log(req.params.id);
+    const user = await User.findByIdAndUpdate(req.params.id, {
+        verified: 'accepted',
+    });
+    return res.status(200).json({ msg: "User accepted successfully"});
+}

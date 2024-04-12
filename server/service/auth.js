@@ -6,7 +6,6 @@ export function setUser(user) {
         _id: user.id,
         email: user.email,
     };
-
     return jwt.sign(payload, secret);
 }
 

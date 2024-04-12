@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 
 const roleSchema = new mongoose.Schema({
-    role: {
+    type: {
         type: String,
-        
     }
 })
+
+export const Role = new mongoose.model('role', roleSchema)

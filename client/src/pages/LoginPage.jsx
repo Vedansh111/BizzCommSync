@@ -7,9 +7,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import { useEffect } from "react";
 
 function LoginPage() {
-  const navigate = useNavigate();   
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -27,9 +28,16 @@ function LoginPage() {
 
     axios
       .post("/login", formData)
-      .then((res) => {
+      .then(async (res) => {
+        await localStorage.setItem("access_token", res.data?.uid);
+        await localStorage.setItem("role", res.data?.user?.role?.type);
         console.log(res);
-        navigate("/example-show-user");
+
+        if (localStorage.getItem("role") === "admin") {
+          navigate("/example-show-admin", { replace: true });
+        } else {
+          navigate("/example-show-user", { replace: true });
+        }
         reset();
       })
       .catch((err) => {
@@ -37,6 +45,16 @@ function LoginPage() {
         alert(err.response?.data?.msg);
       });
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("role") === "admin") {
+      navigate("/example-show-admin");
+    } else if (localStorage.getItem("role") === "user") {
+      navigate("/example-show-user");
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="bg-[#c6d7d9] h-screen flex items-center justify-center tracking-wide">
@@ -59,7 +77,7 @@ function LoginPage() {
                 method="post"
               >
                 <Inputs
-                title="Email"
+                  title="Email"
                   name="email"
                   type="email"
                   placeholder="name@email.com"
@@ -71,7 +89,7 @@ function LoginPage() {
                   </span>
                 )}
                 <Inputs
-                title="Password"
+                  title="Password"
                   name="password"
                   type="password"
                   placeholder="password"
