@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import axios from "axios";
 import App from "./App.jsx";
-import "./index.css";
+import "./styles/index.css";
 
 axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.headers.common["ngrok-skip-browser-warning"] = true;

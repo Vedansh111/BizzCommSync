@@ -4,7 +4,8 @@
   "description": "The server side of BizzCommSync",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "debug": "nodemon --inspect index.js"
   },
   "type": "module",
   "author": "Vedansh",

@@ -2,9 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { router } from './routes/user.js';
-import { handleUserLogin } from './controllers/user.js';
-import { connectMongoDb } from './connection.js';
+import { router } from './routes/user.routes.js';
+import { handleUserLogin } from './controllers/user.controller.js';
+import { connectMongoDb } from './controllers/mongoConnection.controller.js';
 // import { user_router } from './routes/url.js';
 
 const app = express();

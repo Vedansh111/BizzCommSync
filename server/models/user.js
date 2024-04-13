@@ -17,8 +17,8 @@ const userSchema = new mongoose.Schema({
     address: {
         type: String,
     },
-    bussiness_type: {
-        type: String,
+    bussiness: {
+        type: Object,
         required: true,
     },
     password: {
@@ -27,16 +27,22 @@ const userSchema = new mongoose.Schema({
     },
     verified: {
         type: String,
-        required: true,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
     },
     role: {
         type: Object,
         required: true,
     },
-    // bussiness_id: {
-    //     type: Number,
-    //     required: true,
-    // }
 }, { timestamps: true });
+
+userSchema.methods.isVerified = function () {
+    debugger
+    if (this.role.type === "admin") {
+        return true;
+    } else {
+        return this.verified === "accepted";
+    }
+}
 
 export const User = new mongoose.model('user', userSchema);

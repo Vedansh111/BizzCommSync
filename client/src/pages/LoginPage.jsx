@@ -1,6 +1,6 @@
-import Inputs from "../components/helper/Inputs";
-import SubmitButton from "../components/helper/SubmitButton";
-import LinkTo from "../components/helper/LinkTo";
+import Inputs from "../components/Inputs";
+import SubmitButton from "../components/SubmitButton";
+import LinkTo from "../components/LinkTo";
 import { Link } from "react-router-dom";
 import { schema } from "../schemas/LoginSchema";
 import { useForm } from "react-hook-form";
@@ -34,9 +34,9 @@ function LoginPage() {
         console.log(res);
 
         if (localStorage.getItem("role") === "admin") {
-          navigate("/example-show-admin", { replace: true });
+          navigate("/admin/dashboard", { replace: true });
         } else {
-          navigate("/example-show-user", { replace: true });
+          navigate("/user/dashboard", { replace: true });
         }
         reset();
       })
@@ -48,9 +48,9 @@ function LoginPage() {
 
   useEffect(() => {
     if (localStorage.getItem("role") === "admin") {
-      navigate("/example-show-admin");
+      navigate("/admin/dashboard");
     } else if (localStorage.getItem("role") === "user") {
-      navigate("/example-show-user");
+      navigate("/user/dashboard");
     } else {
       navigate("/");
     }
@@ -58,7 +58,7 @@ function LoginPage() {
 
   return (
     <div className="bg-[#c6d7d9] h-screen flex items-center justify-center tracking-wide">
-      <div className=" size-[90%] grid grid-cols-12 font-jura m-5 shadow-md rounded-2xl">
+      <div className=" size-[90%] text-black grid grid-cols-12 font-jura m-5 shadow-md rounded-2xl">
         {/* Title, Form */}
         <div className="col-span-12 md:col-span-5 bg-white flex justify-center items-center rounded-tl-2xl rounded-bl-2xl">
           <div className=" sm:size-[80%] grid grid-rows-12">

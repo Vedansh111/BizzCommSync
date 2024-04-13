@@ -1,5 +1,5 @@
-import SubmitButton from "../components/helper/SubmitButton";
-import SignupInputs from "../components/helper/SignupInputs";
+import SubmitButton from "../components/SubmitButton";
+import SignupInputs from "../components/SignupInputs";
 import { schema } from "../schemas/SignUpSchema";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -43,7 +43,7 @@ function SignUpPage() {
 
   return (
     <div className="bg-[#c6d7d9] h-screen flex items-center justify-center tracking-wide">
-      <div className=" size-[90%] grid grid-cols-12 font-jura m-5 shadow-md rounded-2xl">
+      <div className=" size-[90%] text-black grid grid-cols-12 font-jura m-5 shadow-md rounded-2xl">
         {/* Title, Form */}
         <div className="col-span-12 md:col-span-5 bg-white flex justify-center items-center rounded-tl-2xl rounded-bl-2xl">
           <div className="size-[80%] grid grid-rows-12">
