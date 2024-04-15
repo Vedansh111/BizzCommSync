@@ -4,61 +4,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBuilding } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
+import {
+  approveUser,
+  rejectUser,
+  ShowVerified,
+  handleGetUsers,
+} from "../../controllers/Admin/AdminUserRequests.controller";
 
 function AdminUserRequests() {
   const navigate = useNavigate();
   const context = useOutletContext();
   const [users, setUsers] = useState([]);
-
-  const approveUser = (val) => {
-    console.log(val);
-    axios
-      .patch(`/api/users/${val}/accept_user`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const rejectUser = (val) => {
-    console.log(val);
-    axios
-      .patch(`/api/users/${val}/reject_user`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const logoutUser = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
-
-  function ShowVerified({ result, bgColor }) {
-    return (
-      <div
-        className={`w-24 p-1 text-center text-white rounded-md bg-[${result === "accepted" ? "#04bcc9" : "#c91602"}]`}
-      >
-        {result === "accepted" ? "Accepted" : "Rejected"}
-      </div>
-    );
-  }
+  const [dropDownValue, setDropDownValue] = useState("pending");
 
   useEffect(() => {
-    axios
-      .get("/api/users")
-      .then((res) => {
-        console.log(res.data);
-        setUsers(res?.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    handleGetUsers(axios, setUsers);
     if (
       localStorage.getItem("access_token") &&
       localStorage.getItem("role") === "user"
@@ -68,11 +28,11 @@ function AdminUserRequests() {
       localStorage.getItem("access_token") &&
       localStorage.getItem("role") === "admin"
     ) {
-      navigate("/admin/example-show-admin");
+      navigate("/admin/requests");
     } else {
       navigate("/");
     }
-  }, []);
+  }, [dropDownValue]);
 
   return (
     <div className="flex w-full">
@@ -82,17 +42,25 @@ function AdminUserRequests() {
       <div className=" h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
         <div className="w-full sm:flex p-2 items-end">
           <div className="sm:flex-grow flex justify-between">
-            <div className="">
+            <div>
               <div className="flex items-center">
-                <div className="text-3xl font-bold text-white"></div>
+                <select
+                  defaultValue={"pending"}
+                  onChange={(e) => setDropDownValue(e.target.value)}
+                  className="p-1.5 font-bold space-y-1 rounded-md bg-transparent border text-gray-100 "
+                >
+                  <option className="text-gray-800" value="pending">
+                    Pending
+                  </option>
+                  <option className="text-gray-800" value="accepted">
+                    Accepted
+                  </option>
+                  <option className="text-gray-800" value="rejected">
+                    Rejected
+                  </option>
+                </select>
               </div>
             </div>
-            <button
-              onClick={logoutUser}
-              className="w-24 h-10 rounded-md border border-gray-200 text-gray-200 hover:bg-white hover:text-gray-800"
-            >
-              Logout
-            </button>
             <button
               onClick={context[0]}
               type="button"
@@ -108,7 +76,7 @@ function AdminUserRequests() {
         </div>
 
         {users.map((user) => {
-          return (
+          return dropDownValue === user.verified ? (
             <div key={user._id} className="w-full p-2 lg:w-1/3 flex-wrap">
               <div className="rounded-lg bg-card flex justify-between p-4 h-[8.5rem]">
                 <div className="flex flex-col justify-between">
@@ -131,19 +99,19 @@ function AdminUserRequests() {
                     <div className="flex space-x-2 text-gray-200">
                       <button
                         className="border border-gray-200 p-1 rounded-md hover:bg-green-500 hover:text-white"
-                        onClick={approveUser}
+                        onClick={() => approveUser(user._id, axios, handleGetUsers, setUsers)}
                       >
                         Accept
                       </button>
                       <button
                         className="border border-gray-200 p-1 rounded-md hover:bg-red-500 hover:text-white"
-                        onClick={rejectUser}
+                        onClick={() => rejectUser(user._id, axios, handleGetUsers, setUsers)}
                       >
                         Reject
                       </button>
                     </div>
                   ) : (
-                    <ShowVerified bgColor={"#00CFDC"} result={user.verified} />
+                    <ShowVerified result={user.verified} />
                   )}
                 </div>
                 <div className="flex flex-col items-center space-y-2 text-white">
@@ -156,7 +124,7 @@ function AdminUserRequests() {
                 </div>
               </div>
             </div>
-          );
+          ) : null;
         })}
       </div>
     </div>

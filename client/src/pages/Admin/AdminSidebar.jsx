@@ -1,53 +1,32 @@
-import { useState } from "react";
-import { FaLightbulb, FaCodePullRequest } from "react-icons/fa6";
-import { MdOutlineDashboard } from "react-icons/md";
-import { FaWpforms } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaLightbulb } from "react-icons/fa6";
 import { IoCloseOutline } from "react-icons/io5";
-import { CiSquareQuestion } from "react-icons/ci";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  handleLogoutClick,
+  toggleLogoutMenu,
+  sidebarItems,
+} from "../../controllers/Admin/AdminSidebar.controller";
 import clsx from "https://cdn.skypack.dev/clsx@1.1.1";
 
-const sidebarItems = [
-  [
-    {
-      id: "0",
-      title: "Dashboard",
-      notifications: false,
-      to: "dashboard",
-      icons: <MdOutlineDashboard size={18} />,
-    },
-    {
-      id: "1",
-      title: "Form",
-      notifications: false,
-      to: "",
-      icons: <FaWpforms size={18} />,
-    },
-  ],
-  [
-    {
-      id: "2",
-      title: "Requests",
-      notifications: false,
-      to: "example-show-admin",
-      icons: <FaCodePullRequest />,
-    },
-    {
-      id: "3",
-      title: "Something 2",
-      notifications: false,
-      to: "",
-      icons: <CiSquareQuestion size={18} />,
-    },
-  ],
-];
-
 function AdminSidebar({ onSidebarHide, showSidebar }) {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState("0");
+  const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
   const now = new Date();
-  const month = now.toLocaleString("en-US", { month: "long" }); // Get the full month name (November)
-  const day = now.getDate(); // Get the day of the month (1-31)
-  const year = now.getFullYear(); // Get the full year (YYYY)
+  const month = now.toLocaleString("en-US", { month: "long" });
+  const day = now.getDate();
+  const year = now.getFullYear();
+
+  useEffect(() => {
+    if (localStorage.getItem("role") === "admin") {
+      navigate("/admin/dashboard");
+    } else if (localStorage.getItem("role") === "user") {
+      navigate("/user/dashboard");
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div
@@ -107,7 +86,7 @@ function AdminSidebar({ onSidebarHide, showSidebar }) {
         ))}
         <div className="flex-grow" />
 
-        <div className="w-full p-3 h-28 hidden sm:block sm:h-20 xl:h-32">
+        <div className="w-full p-3 h-28 hidden xl:block sm:h-20 xl:h-32">
           <div
             className="rounded-xl w-full h-full px-3 sm:px-0 xl:px-3 overflow-hidden"
             style={{
@@ -118,7 +97,7 @@ function AdminSidebar({ onSidebarHide, showSidebar }) {
             <div className="block sm:hidden xl:block pt-3">
               <div className="font-bold text-gray-300 text-sm">Used Space</div>
               <div className="text-gray-400 text-xs">
-              {month}, {day}-{year}
+                {month}, {day}-{year}
               </div>
               <div className="w-full text-gray-300"></div>
             </div>
@@ -129,19 +108,30 @@ function AdminSidebar({ onSidebarHide, showSidebar }) {
       <div className="flex-shrink-0 overflow-hidden p-2">
         <div className="flex items-center h-full sm:justify-center xl:justify-start p-2 sidebar-separator-bottom">
           <img
-            src={`https://assets.codepen.io/3685267/mock_faces_8.jpg`}
+            src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdbB5giaOWV-eex1n8vAKr47X363dGA7UsgYJ2o-D2fg&s`}
             alt=""
-            className={clsx("w-10 h-10 rounded-full")}
+            className={"size-10 rounded-full"}
           />
           <div className="block sm:hidden xl:block ml-2 font-bold ">
-            Jerry Wilson
+            Administrator
           </div>
           <div className="flex-grow block sm:hidden xl:block" />
           <img
             src={`https://assets.codepen.io/3685267/res-react-dash-options.svg`}
             alt=""
-            className={clsx("block sm:hidden xl:block w-3 h-3")}
+            onClick={() =>
+              toggleLogoutMenu(setIsLogoutMenuOpen, isLogoutMenuOpen)
+            }
+            className={"block sm:hidden xl:block size-3 cursor-pointer"}
           />
+          {isLogoutMenuOpen && (
+            <div
+              onClick={() => handleLogoutClick(navigate)}
+              className="absolute rounded-br-none left-3/4 bottom-11 p-1 cursor-pointer text-gray-100 text-center sm:left-16 sm:bottom-11 xl:left-56 xl:bottom-10 mt-2 mr-2 border rounded-md sm:rounded-bl-none w-20 z-50 hover:bg-white hover:text-gray-900"
+            >
+              Logout
+            </div>
+          )}
         </div>
       </div>
     </div>

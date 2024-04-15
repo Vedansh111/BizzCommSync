@@ -14,12 +14,12 @@ function ExampleUserPage() {
       localStorage.getItem("access_token") &&
       localStorage.getItem("role") === "user"
     ) {
-      navigate("/user/example-show-user");
+      navigate("/user/dashboard");
     } else if (
       localStorage.getItem("access_token") &&
       localStorage.getItem("role") === "admin"
     ) {
-      navigate("/admin/example-show-admin");
+      navigate("/admin/dashboard");
     } else {
       navigate("/");
     }

@@ -4,7 +4,7 @@ import { setUser } from "../service/auth.js";
 import { Bussiness } from "../models/Bussiness.js";
 
 export const handleGetAllUsers = async (req, res) => {
-    const allDbUsers = await User.find({ email: { $ne: "admin@gmail.com"}}, { password: 0, __v: 0, createdAt: 0, updatedAt: 0 });
+    const allDbUsers = await User.find({ email: { $ne: "admin@gmail.com" } }, { password: 0, __v: 0, createdAt: 0, updatedAt: 0 });
     res.json(allDbUsers);
 }
 
@@ -34,14 +34,14 @@ export const handleDeleteUserById = async (req, res) => {
 
 export const handleCreateNewUser = async (req, res) => {
     const body = req.body;
-    if (!body ||
-        !body.username ||
+    console.log(req.body);
+    if (!body.username ||
         !body.email ||
         !body.mobile_no ||
         !body.address ||
         !body.password ||
         !body.bussiness_type) {
-            return res.status(400).json({
+        return res.status(400).json({
             msg: "All fields are required"
         })
     }
@@ -50,10 +50,10 @@ export const handleCreateNewUser = async (req, res) => {
     if (checkSameEmail.length !== 0) {
         return res.status(409).json({ msg: "Email already in use" });
     }
-    
+
     const bussiness = await Bussiness.findOne({ type: body.bussiness_type })
     const userRole = await Role.findOne({ type: "user" });
-    
+
     await User.create({
         username: body.username,
         email: body.email,
@@ -61,10 +61,7 @@ export const handleCreateNewUser = async (req, res) => {
         address: body.address,
         bussiness: bussiness,
         password: body.password,
-        role: {
-            role_id: userRole._id,
-            type: userRole.type,
-        },
+        role: userRole,
     });
 
     return res.status(201).json({
@@ -74,6 +71,7 @@ export const handleCreateNewUser = async (req, res) => {
 
 export const handleUserLogin = async (req, res) => {
     const body = req.body;
+    debugger
     const user = await User.findOne({ email: body.email, password: body.password }, { password: 0, __v: 0 });
     if (!user) return res.status(404).json({ msg: "User not found!" });
     if (user.isVerified()) {
