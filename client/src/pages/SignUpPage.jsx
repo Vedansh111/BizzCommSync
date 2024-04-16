@@ -133,7 +133,7 @@ function SignUpPage() {
                 )}
                 <SubmitButton name="Create Account" />
                 <div className="-mt-2">
-                  Already have an account?{" "}
+                  Already have an account?
                   <Link to="/" className="text-[#198f9f]">
                     Login
                   </Link>

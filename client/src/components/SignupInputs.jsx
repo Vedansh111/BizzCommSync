@@ -1,5 +1,3 @@
-import React from 'react'
-
 function SignupInputs(props) {
   return (
     <div className="grid py-2 my-1">

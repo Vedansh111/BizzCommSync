@@ -100,5 +100,3 @@ export const handleAcceptUserById = async (req, res) => {
     });
     return res.status(200).json({ msg: "User accepted successfully" });
 };
-
-
